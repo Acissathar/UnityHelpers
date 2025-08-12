@@ -1,0 +1,12 @@
+{
+  "name": "com.acissathar.unityhelpers",
+  "displayName": "Unity Helpers",
+  "version": "0.0.1",
+  "unity": "6000.0",
+  "description": "A collection of generic extension and Unity helper scripts that I use throughout a variety of projects.",
+  "author": {
+    "name": "Will B",
+    "email": "acissathar@gmail.com",
+    "url": "https://github.com/Acissathar/UnityHelpers"
+  }
+}
