@@ -2,26 +2,26 @@
 
 namespace UnityHelpers.Runtime.Math
 {
-	//This is a static helper class that offers various methods for calculating and modifying vectors (as well as float values);
+	//This is a static helper class that offers various methods for calculating and modifying vectors (as well as float values)
 	public static class VectorMath 
 	{
-		//Calculate a signed angle (ranging from -180 to +180) between '_vector_1' and '_vector_2';
+		//Calculate a signed angle (ranging from -180 to +180) between '_vector_1' and '_vector_2'
 		public static float GetAngle(Vector3 vector1, Vector3 vector2, Vector3 planeNormal)
 		{
-			//Calculate angle and sign;
+			//Calculate angle and sign
 			var angle = Vector3.Angle(vector1,vector2);
 			var sign = Mathf.Sign(Vector3.Dot(planeNormal,Vector3.Cross(vector1,vector2)));
 			
-			//Combine angle and sign;
+			//Combine angle and sign
 			var signedAngle = angle * sign;
 
 			return signedAngle;
 		}
 
-		//Returns the length of the part of a vector that points in the same direction as '_direction' (i.e., the dot product);
+		//Returns the length of the part of a vector that points in the same direction as '_direction' (i.e., the dot product)
 		public static float GetDotProduct(Vector3 vector, Vector3 direction)
 		{
-			//Normalize vector if necessary;
+			//Normalize vector if necessary
 			if (!Mathf.Approximately(direction.sqrMagnitude, 1))
 			{
 				direction.Normalize();
@@ -32,10 +32,10 @@ namespace UnityHelpers.Runtime.Math
 			return length;
 		}
 		
-		//Remove all parts from a vector that are pointing in the same direction as '_direction';
+		//Remove all parts from a vector that are pointing in the same direction as 'direction'
 		public static Vector3 RemoveDotVector(Vector3 vector, Vector3 direction)
 		{
-			//Normalize vector if necessary;
+			//Normalize vector if necessary
 			if (!Mathf.Approximately(direction.sqrMagnitude, 1))
 			{
 				direction.Normalize();
@@ -48,7 +48,7 @@ namespace UnityHelpers.Runtime.Math
 			return vector;
 		}
 		
-		//Extract and return parts from a vector that are pointing in the same direction as '_direction';
+		//Extract and return parts from a vector that are pointing in the same direction as 'direction'
 		public static Vector3 ExtractDotVector(Vector3 vector, Vector3 direction)
 		{
 			//Normalize vector if necessary;
@@ -62,7 +62,7 @@ namespace UnityHelpers.Runtime.Math
 			return direction * amount;
 		}
 
-		//Rotate a vector onto a plane defined by '_planeNormal'; 
+		//Rotate a vector onto a plane defined by 'planeNormal'
 		public static Vector3 RotateVectorOntoPlane(Vector3 vector, Vector3 planeNormal, Vector3 upDirection)
 		{
 			//Calculate rotation;
@@ -74,7 +74,7 @@ namespace UnityHelpers.Runtime.Math
 			return vector;
 		}
 
-		//Project a point onto a line defined by '_lineStartPosition' and '_lineDirection';
+		//Project a point onto a line defined by 'lineStartPosition' and 'lineDirection'
 		public static Vector3 ProjectPointOntoLine(Vector3 lineStartPosition, Vector3 lineDirection, Vector3 point)
 		{		
 			//Calculate vector pointing from '_lineStartPosition' to '_point';
@@ -85,7 +85,7 @@ namespace UnityHelpers.Runtime.Math
 			return lineStartPosition + lineDirection * dotProduct;
 		}
 
-		//Increments a vector toward a target vector, using '_speed' and '_deltaTime';
+		//Increments a vector toward a target vector, using 'speed' and 'deltaTime'
 		public static Vector3 IncrementVectorTowardTargetVector(Vector3 currentVector, float speed, float deltaTime, Vector3 targetVector)
 		{
 			return Vector3.MoveTowards(currentVector, targetVector, speed * deltaTime);

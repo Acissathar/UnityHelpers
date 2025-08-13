@@ -12,14 +12,11 @@ namespace UnityHelpers.Runtime.Transform
 		#endregion
 		
 		#region Editor - Smooth Settings
+
+		[SerializeField, Tooltip("How fast the current position will be smoothed toward the target rotation.")]  private float smoothSpeed = 20f;
 		
-		//Speed that controls how fast the current rotation will be smoothed toward the target rotation
-		[SerializeField] private float smoothSpeed = 20f;
-
-		//Whether rotation values will be extrapolated to compensate for delay caused by smoothing
-		[SerializeField] private bool extrapolateRotation;
-
-		//'UpdateType' controls whether the smoothing function is called in 'Update' or 'LateUpdate'
+		[SerializeField, Tooltip("Should position values be extrapolated to compensate for delay caused by smoothing.")] private bool extrapolateRotation;
+		
 		private enum UpdateType
 		{
 			Update,

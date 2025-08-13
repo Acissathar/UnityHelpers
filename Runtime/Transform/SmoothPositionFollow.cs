@@ -13,16 +13,12 @@ namespace UnityHelpers.Runtime.Transform
 		
 		#region Editor - Smooth Settings
 		
-		//Speed that controls how fast the current position will be smoothed toward the target position when 'Lerp' is selected as smoothType
-		[SerializeField] private float lerpSpeed = 20.0f;
+		[SerializeField, Tooltip("How fast the current position will be smoothed toward the target position when 'Lerp' is selected as smoothType.")] private float lerpSpeed = 20.0f;
 
-		//Time that controls how fast the current position will be smoothed toward the target position when 'SmoothDamp' is selected as smoothType
-		[SerializeField] private float smoothDampTime = 0.02f;
-
-		//Whether position values will be extrapolated to compensate for delay caused by smoothing
-		[SerializeField] private bool extrapolatePosition;
+		[SerializeField, Tooltip("How fast the current position will be smoothed toward the target position when 'SmoothDamp' is selected as smoothType.")] private float smoothDampTime = 0.02f;
 		
-		//Different smooth-types use different algorithms to smooth out the target's position
+		[SerializeField, Tooltip("Should position values be extrapolated to compensate for delay caused by smoothing.")] private bool extrapolatePosition;
+		
 		private enum SmoothType
 		{
 			Lerp,
@@ -31,7 +27,6 @@ namespace UnityHelpers.Runtime.Transform
 
 		[SerializeField] private SmoothType smoothType;
 		
-		//'UpdateType' controls whether the smoothing function is called in 'Update' or 'LateUpdate'
 		private enum UpdateType
 		{
 			Update,
