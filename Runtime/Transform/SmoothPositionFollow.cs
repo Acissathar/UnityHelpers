@@ -4,34 +4,14 @@ namespace UnityHelpers.Runtime.Transform
 {
 	public class SmoothPositionFollow : MonoBehaviour
 	{
-		#region Editor - Component References
+		#region Editor - Settings
 		
 		[SerializeField] private UnityEngine.Transform followTarget;
 		private UnityEngine.Transform myTransform;
-		
-		#endregion
-		
-		#region Editor - Smooth Settings
-		
 		[SerializeField] private float lerpSpeed = 20.0f;
-
 		[SerializeField] private float smoothDampTime = 0.02f;
-		
-		[SerializeField, Tooltip("Should position values be extrapolated to compensate for delay caused by smoothing.")] private bool extrapolatePosition;
-		
-		private enum SmoothType
-		{
-			Lerp,
-			SmoothDamp, 
-		}
-
+		[SerializeField] private bool extrapolatePosition;
 		[SerializeField] private SmoothType smoothType;
-		
-		private enum UpdateType
-		{
-			Update,
-			LateUpdate
-		}
 		[SerializeField] private UpdateType updateType;
 		
 		#endregion
@@ -42,10 +22,25 @@ namespace UnityHelpers.Runtime.Transform
 		private Vector3 _localPositionOffset;
 		private Vector3 _refVelocity;
 
+		private enum SmoothType
+		{
+			Lerp,
+			SmoothDamp, 
+		}
+		
+		private enum UpdateType
+		{
+			Update,
+			LateUpdate
+		}
+		
 		#endregion
 		
-		#region Unity Lifecycle Methods
+		#region Unity Methods
 
+		/// <summary>
+		///     Unity calls Awake when an enabled script instance is being loaded.
+		/// </summary>
 		private void Awake () 
 		{
 			
@@ -61,12 +56,18 @@ namespace UnityHelpers.Runtime.Transform
 			_localPositionOffset = myTransform.localPosition;
 		}
 		
+		/// <summary>
+		///     This function is called when the object becomes enabled and active.
+		/// </summary>
 		private void OnEnable()
 		{
 			ResetCurrentPosition();
 		}
 
-		private void Update () 
+		/// <summary>
+		/// Update is called every frame, if the MonoBehaviour is enabled.
+		/// </summary>
+		private void Update() 
 		{
 			if (updateType == UpdateType.LateUpdate)
 			{
@@ -76,7 +77,10 @@ namespace UnityHelpers.Runtime.Transform
 			SmoothUpdate();
 		}
 
-		private void LateUpdate () 
+		/// <summary>
+		///     LateUpdate is called every frame, if the Behaviour is enabled after all other Update functions.
+		/// </summary>
+		private void LateUpdate() 
 		{
 			if (updateType == UpdateType.Update)
 			{
@@ -90,12 +94,22 @@ namespace UnityHelpers.Runtime.Transform
 		
 		#region Smoothing
 		
+		/// <summary>
+		/// Calculates and then handles Smoothing, called in either Update or LateUpdate, but never both.
+		/// </summary>
 		private void SmoothUpdate()
 		{
 			_currentPosition = Smooth (_currentPosition, followTarget.position, lerpSpeed);
 			myTransform.position = _currentPosition;
 		}
 
+		/// <summary>
+		/// Calculate the position smoothing, either by Lerp or SmoothDamp.
+		/// </summary>
+		/// <param name="start">Starting position.</param>
+		/// <param name="target">Desired ending position.</param>
+		/// <param name="smoothTime">Smoothing multiplier to be applied between the two positions.</param>
+		/// <returns></returns>
 		private Vector3 Smooth(Vector3 start, Vector3 target, float smoothTime)
 		{
 			Vector3 offset = myTransform.localToWorldMatrix * _localPositionOffset;
@@ -129,13 +143,12 @@ namespace UnityHelpers.Runtime.Transform
 		
 		#region Public Methods
 		
-		//Reset stored position and move this game object directly to the target's position
-		//Call this function if the target has just been moved a larger distance, and no interpolation should take place (teleporting)
+		/// <summary>
+		/// Reset the stored position and move this game object directly to the target's position so no interpolation should take place (i.e. when teleporting)
+		/// </summary>
 		public void ResetCurrentPosition()
 		{
-			//Convert local position offset to world coordinates;
 			Vector3 offset = myTransform.localToWorldMatrix * _localPositionOffset;
-			//Add position offset and set current position;
 			_currentPosition = followTarget.position + offset;
 		}
 		

@@ -2,112 +2,127 @@
 
 namespace UnityHelpers.Runtime.Transform
 {
-	public class SmoothRotationFollow : MonoBehaviour 
-	{
-		#region Editor - Component References
-		
-		[SerializeField] private UnityEngine.Transform followTarget;
-		private UnityEngine.Transform myTransform;
-		
-		#endregion
-		
-		#region Editor - Smooth Settings
+    public class SmoothRotationFollow : MonoBehaviour
+    {
+        #region Public Methods
 
-		[SerializeField]  private float smoothSpeed = 20f;
-		
-		[SerializeField] private bool extrapolateRotation;
-		
-		private enum UpdateType
-		{
-			Update,
-			LateUpdate
-		}
-		[SerializeField] private UpdateType updateType;
+        /// <summary>
+        ///     Reset the stored position and move this game object directly to the target's position so no interpolation should
+        ///     take place (i.e. when teleporting)
+        /// </summary>
+        public void ResetCurrentRotation()
+        {
+            myRotation = followTarget.rotation;
+        }
 
-		#endregion
-		
-		#region Private Fields
+        #endregion
 
-		private Quaternion myRotation;
+        #region Editor - Settings
 
-		#endregion
-		
-		#region Unity Lifecycle Methods
-		
-		private void Awake () 
-		{
-			myTransform = transform;
-			//If no target has been selected, choose this transform's parent as target
-			if (followTarget == null)
-			{
-				followTarget = myTransform.parent;
-			}
-			
-			myRotation = transform.rotation;
-		}
-		
-		private void OnEnable()
-		{
-			ResetCurrentRotation();
-		}
+        [SerializeField] private UnityEngine.Transform followTarget;
+        private UnityEngine.Transform myTransform;
+        [SerializeField] private float smoothSpeed = 20f;
+        [SerializeField] private bool extrapolateRotation;
+        [SerializeField] private UpdateType updateType;
 
-		private void Update () 
-		{
-			if (updateType == UpdateType.LateUpdate)
-			{
-				return;
-			}
+        #endregion
 
-			SmoothUpdate();
-		}
+        #region Private Fields
 
-		private void LateUpdate () 
-		{
-			if (updateType == UpdateType.Update)
-			{
-				return;
-			}
+        private Quaternion myRotation;
 
-			SmoothUpdate();
-		}
+        private enum UpdateType
+        {
+            Update,
+            LateUpdate
+        }
 
-		#endregion
-		
-		#region Smoothing
-		
-		private void SmoothUpdate()
-		{
-			//Smooth current rotation;
-			myRotation = Smooth (myRotation, followTarget.rotation);
+        #endregion
 
-			//Set rotation;
-			myTransform.rotation = myRotation;
-		}
+        #region Unity Methods
 
-		//Smooth a rotation toward a target rotation based on 'smoothTime';
-		private Quaternion Smooth(Quaternion currentRotation, Quaternion targetRotation)
-		{
-			//If 'extrapolateRotation' is set to 'true', calculate a new target rotation;
-			if (extrapolateRotation && Quaternion.Angle(currentRotation, targetRotation) < 90f) 
-			{
-				var difference = targetRotation * Quaternion.Inverse (currentRotation);
-				targetRotation *= difference;
-			}
-			
-			return Quaternion.Slerp (currentRotation, targetRotation, Time.deltaTime * smoothSpeed);
-		}
+        /// <summary>
+        ///     Unity calls Awake when an enabled script instance is being loaded.
+        /// </summary>
+        private void Awake()
+        {
+            myTransform = transform;
+            //If no target has been selected, choose this transform's parent as target
+            if (followTarget == null)
+            {
+                followTarget = myTransform.parent;
+            }
 
-		#endregion
-		
-		#region Public Methods
-		
-		//Reset stored rotation and rotate this game object to match the target's rotation
-		//Call this function if the target has just been rotated and no interpolation should take place (instant rotation)
-		public void ResetCurrentRotation()
-		{
-			myRotation = followTarget.rotation;
-		}
-		
-		#endregion
-	}
+            myRotation = transform.rotation;
+        }
+
+        /// <summary>
+        ///     This function is called when the object becomes enabled and active.
+        /// </summary>
+        private void OnEnable()
+        {
+            ResetCurrentRotation();
+        }
+
+        /// <summary>
+        ///     Update is called every frame, if the MonoBehaviour is enabled.
+        /// </summary>
+        private void Update()
+        {
+            if (updateType == UpdateType.LateUpdate)
+            {
+                return;
+            }
+
+            SmoothUpdate();
+        }
+
+        /// <summary>
+        ///     LateUpdate is called every frame, if the Behaviour is enabled after all other Update functions.
+        /// </summary>
+        private void LateUpdate()
+        {
+            if (updateType == UpdateType.Update)
+            {
+                return;
+            }
+
+            SmoothUpdate();
+        }
+
+        #endregion
+
+        #region Smoothing
+
+        /// <summary>
+        ///     Calculates and then handles Smoothing, called in either Update or LateUpdate, but never both.
+        /// </summary>
+        private void SmoothUpdate()
+        {
+            myRotation = Smooth(myRotation, followTarget.rotation);
+
+            myTransform.rotation = myRotation;
+        }
+
+        /// <summary>
+        ///     Calculate the rotation smoothing based on input parameters.
+        /// </summary>
+        /// <param name="start">Starting position.</param>
+        /// <param name="target">Desired ending position.</param>
+        /// <param name="smoothTime">Smoothing multiplier to be applied between the two positions.</param>
+        /// <returns></returns>
+        private Quaternion Smooth(Quaternion currentRotation, Quaternion targetRotation)
+        {
+            //If 'extrapolateRotation' is set to 'true', calculate a new target rotation;
+            if (extrapolateRotation && Quaternion.Angle(currentRotation, targetRotation) < 90f)
+            {
+                var difference = targetRotation * Quaternion.Inverse(currentRotation);
+                targetRotation *= difference;
+            }
+
+            return Quaternion.Slerp(currentRotation, targetRotation, Time.deltaTime * smoothSpeed);
+        }
+
+        #endregion
+    }
 }
